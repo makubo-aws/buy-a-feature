@@ -292,44 +292,14 @@ async function submitAllocations() {
   row.total = spent;
 
   try {
-    // Use a form-encoded POST via a hidden iframe to avoid CORS issues with Google Apps Script
-    const form = document.createElement("form");
-    form.method = "POST";
-    form.action = CONFIG.scriptUrl;
-    form.target = "hidden-iframe";
-    form.style.display = "none";
-
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.name = "payload";
-    input.value = JSON.stringify(row);
-    form.appendChild(input);
-
-    // Also send as individual fields for easier Apps Script parsing
-    const dataInput = document.createElement("input");
-    dataInput.type = "hidden";
-    dataInput.name = "data";
-    dataInput.value = JSON.stringify(row);
-    form.appendChild(dataInput);
-
-    let iframe = document.getElementById("hidden-iframe");
-    if (!iframe) {
-      iframe = document.createElement("iframe");
-      iframe.name = "hidden-iframe";
-      iframe.id = "hidden-iframe";
-      iframe.style.display = "none";
-      document.body.appendChild(iframe);
-    }
-
-    document.body.appendChild(form);
-    form.submit();
-    document.body.removeChild(form);
-
-    // Wait a moment then show success (we can't read iframe response cross-origin)
+    // Send as GET with data in URL params — avoids CORS/auth issues with Apps Script
+    const encoded = encodeURIComponent(JSON.stringify(row));
+    const url = CONFIG.scriptUrl + "?data=" + encoded;
+    const img = new Image();
+    img.src = url; // fires GET request, no CORS restriction
     setTimeout(() => {
       document.getElementById("successOverlay").classList.add("show");
-    }, 1500);
-
+    }, 1000);
   } catch (e) {
     btn.disabled = false;
     btn.textContent = "Submit My Picks";
