@@ -33,8 +33,8 @@ const CONFIG = {
   ],
 
   // Google Apps Script Web App URL (set after deploying the script)
-  scriptUrl: "YOUR_GOOGLE_APPS_SCRIPT_URL_HERE",
+  scriptUrl: "https://script.google.com/macros/s/AKfycbzcZms9Ab-gcp7YjsFl01J61IslAlnl5__go_yiM41Zrm5vDhqz3NjMFPoqOwHIfmyE/exec",
 
   // Google Sheet ID (the long string in the sheet URL)
-  sheetId: "YOUR_GOOGLE_SHEET_ID_HERE"
+  sheetId: "159bH4tM3eyGHp4fscvpHJXdVk0Mqjv6o2xmTGowYcGQ"
 };
