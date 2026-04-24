@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Results — Buy a Feature</title>
+<style>
+  :root {
+    --primary: #0972d3; --primary-dark: #065299;
+    --gold: #d4a017; --silver: #8a8a8a; --bronze: #b87333;
+    --bg: #f4f6f8; --card: #fff; --text: #16191f;
+    --muted: #687078; --border: #dfe3e8; --radius: 14px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg); color: var(--text);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .topbar {
+    background: linear-gradient(135deg, #0972d3 0%, #065299 100%);
+    color: white; padding: 20px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 2px 12px rgba(9,114,211,0.3);
+  }
+  .topbar h1 { font-size: 20px; font-weight: 700; }
+  .topbar .meta { font-size: 12px; opacity: 0.7; }
+  .topbar .refresh {
+    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
+    color: white; padding: 8px 16px; border-radius: 8px; cursor: pointer;
+    font-size: 13px; font-weight: 600; transition: background 0.2s;
+  }
+  .topbar .refresh:hover { background: rgba(255,255,255,0.25); }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 24px; }
+
+  .stat-row { display: flex; gap: 16px; margin-bottom: 28px; flex-wrap: wrap; }
+  .stat {
+    flex: 1; min-width: 140px; background: var(--card); border-radius: var(--radius);
+    padding: 24px; text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  }
+  .stat .num { font-size: 36px; font-weight: 800; color: var(--primary); letter-spacing: -1px; }
+  .stat .label { font-size: 12px; color: var(--muted); margin-top: 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+  .section-title {
+    font-size: 13px; font-weight: 700; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.8px;
+    margin: 28px 0 14px; padding-left: 4px;
+  }
+
+  .ranking-card {
+    background: var(--card); border-radius: var(--radius);
+    padding: 20px 24px; margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    display: flex; align-items: flex-start; gap: 20px;
+    transition: transform 0.2s;
+  }
+  .ranking-card:hover { transform: translateY(-1px); }
+  .ranking-card .rank {
+    font-size: 28px; font-weight: 800; color: var(--muted);
+    min-width: 44px; text-align: center; padding-top: 2px;
+  }
+  .ranking-card .rank.r1 { color: var(--gold); }
+  .ranking-card .rank.r2 { color: var(--silver); }
+  .ranking-card .rank.r3 { color: var(--bronze); }
+  .ranking-card .info { flex: 1; min-width: 0; }
+  .ranking-card .info .title { font-size: 17px; font-weight: 700; margin-bottom: 2px; }
+  .ranking-card .info .desc { font-size: 13px; color: var(--muted); line-height: 1.4; }
+  .ranking-card .info .added-by { font-size: 11px; color: var(--primary); font-style: italic; margin-top: 2px; }
+
+  .bar-container { margin-top: 10px; }
+  .bar-bg {
+    height: 10px; background: #eef1f4; border-radius: 5px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%; border-radius: 5px;
+    background: linear-gradient(90deg, var(--primary) 0%, #4da6ff 100%);
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .bar-label { display: flex; justify-content: space-between; margin-top: 6px; }
+  .bar-label .investors { font-size: 12px; color: var(--muted); }
+  .bar-label .investor-list { font-size: 11px; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+
+  .ranking-card .amount {
+    font-size: 28px; font-weight: 800; color: var(--primary);
+    white-space: nowrap; padding-top: 2px;
+  }
+
+  .table-wrap {
+    background: var(--card); border-radius: var(--radius);
+    overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    overflow-x: auto;
+  }
+  .table-wrap table { width: 100%; border-collapse: collapse; min-width: 500px; }
+  .table-wrap th {
+    background: #f8f9fa; padding: 12px 14px; text-align: left;
+    font-size: 11px; color: var(--muted); font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--border); white-space: nowrap;
+  }
+  .table-wrap td {
+    padding: 12px 14px; font-size: 13px;
+    border-bottom: 1px solid var(--border);
+  }
+  .table-wrap tr:last-child td { border-bottom: none; }
+  .table-wrap td.num { text-align: center; font-weight: 600; }
+  .table-wrap td.num.has-val { color: var(--primary); }
+  .table-wrap tr:hover td { background: #f8f9fa; }
+
+  .empty {
+    text-align: center; padding: 60px 20px; color: var(--muted);
+  }
+  .empty .icon { font-size: 48px; margin-bottom: 12px; }
+  .empty h2 { font-size: 18px; margin-bottom: 8px; color: var(--text); }
+
+  .pulse { animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <h1>📊 Live Results</h1>
+    <div class="meta">Auto-refreshes every 10 seconds</div>
+  </div>
+  <button class="refresh" onclick="loadReport()">↻ Refresh Now</button>
+</div>
+
+<div class="container">
+  <div class="stat-row" id="stats">
+    <div class="stat"><div class="num pulse">—</div><div class="label">Responses</div></div>
+    <div class="stat"><div class="num pulse">—</div><div class="label">Companies</div></div>
+    <div class="stat"><div class="num pulse">—</div><div class="label">Total Invested</div></div>
+  </div>
+
+  <div class="section-title">Feature Rankings</div>
+  <div id="rankings">
+    <div class="empty">
+      <div class="icon">⏳</div>
+      <h2>Waiting for submissions...</h2>
+      <p>Results will appear here as people submit their picks.</p>
+    </div>
+  </div>
+
+  <div class="section-title" id="breakdownTitle" style="display:none">Company Breakdown</div>
+  <div class="table-wrap" id="companyBreakdown"></div>
+</div>
+
+<script src="config.js"></script>
+<script>
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${CONFIG.sheetId}/gviz/tq?tqx=out:json`;
+
+async function loadReport() {
+  try {
+    const res = await fetch(SHEET_URL);
+    const text = await res.text();
+    // Google wraps JSON in a callback: google.visualization.Query.setResponse({...})
+    const json = JSON.parse(text.match(/google\.visualization\.Query\.setResponse\((.+)\)/)[1]);
+
+    const cols = json.table.cols.map(c => c.label);
+    const rows = json.table.rows.map(r => r.c.map(cell => cell ? (cell.v ?? "") : ""));
+
+    if (rows.length === 0) return;
+
+    // Parse: col 0 = timestamp, col 1 = company, col 2..n-1 = features, col n = total
+    const featureCols = cols.slice(2, -1); // feature names
+    const submissions = rows.map(r => ({
+      company: r[1],
+      allocations: Object.fromEntries(featureCols.map((f, i) => [f, parseInt(r[i + 2]) || 0])),
+      total: parseInt(r[r.length - 1]) || 0
+    }));
+
+    // Aggregate
+    const totals = {};
+    const investors = {};
+    featureCols.forEach(f => { totals[f] = 0; investors[f] = []; });
+
+    submissions.forEach(s => {
+      featureCols.forEach(f => {
+        const amt = s.allocations[f] || 0;
+        totals[f] += amt;
+        if (amt > 0) investors[f].push({ company: s.company, amount: amt });
+      });
+    });
+
+    // Also check for custom features (columns we didn't expect)
+    const ranked = Object.entries(totals)
+      .sort(([,a], [,b]) => b - a)
+      .map(([name, total]) => ({
+        name, total,
+        investors: (investors[name] || []).sort((a, b) => b.amount - a.amount)
+      }));
+
+    const companies = [...new Set(submissions.map(s => s.company))];
+    const totalSpent = submissions.reduce((a, s) => a + s.total, 0);
+    const maxInvest = ranked.length ? ranked[0].total : 1;
+
+    // Stats
+    document.getElementById("stats").innerHTML = `
+      <div class="stat"><div class="num">${submissions.length}</div><div class="label">Responses</div></div>
+      <div class="stat"><div class="num">${companies.length}</div><div class="label">Companies</div></div>
+      <div class="stat"><div class="num">$${totalSpent.toLocaleString()}</div><div class="label">Total Invested</div></div>
+    `;
+
+    // Rankings
+    document.getElementById("rankings").innerHTML = ranked.map((f, i) => {
+      const pct = Math.round((f.total / maxInvest) * 100);
+      const rankClass = i === 0 ? "r1" : i === 1 ? "r2" : i === 2 ? "r3" : "";
+      const invList = f.investors.map(inv => `<strong>${esc(inv.company)}</strong> $${inv.amount}`).join(" · ");
+      return `
+      <div class="ranking-card">
+        <div class="rank ${rankClass}">#${i + 1}</div>
+        <div class="info">
+          <div class="title">${esc(f.name)}</div>
+          <div class="bar-container">
+            <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
+            <div class="bar-label">
+              <span class="investors">${f.investors.length} investor${f.investors.length !== 1 ? 's' : ''}</span>
+            </div>
+            <div class="investor-list">${invList}</div>
+          </div>
+        </div>
+        <div class="amount">$${f.total}</div>
+      </div>`;
+    }).join("");
+
+    // Company breakdown table
+    document.getElementById("breakdownTitle").style.display = "";
+    let table = `<table><thead><tr><th>Company</th>`;
+    ranked.forEach(f => { table += `<th>${esc(f.name)}</th>`; });
+    table += `<th>Total</th></tr></thead><tbody>`;
+    submissions.forEach(s => {
+      table += `<tr><td><strong>${esc(s.company)}</strong></td>`;
+      ranked.forEach(f => {
+        const v = s.allocations[f.name] || 0;
+        table += `<td class="num ${v ? 'has-val' : ''}">${v ? "$" + v : "—"}</td>`;
+      });
+      table += `<td class="num has-val"><strong>$${s.total}</strong></td></tr>`;
+    });
+    table += `</tbody></table>`;
+    document.getElementById("companyBreakdown").innerHTML = table;
+
+  } catch (e) {
+    console.error("Failed to load report:", e);
+  }
+}
+
+function esc(s) { const d = document.createElement("div"); d.textContent = s || ""; return d.innerHTML; }
+
+loadReport();
+setInterval(loadReport, 10000);
+</script>
+</body>
+</html>
