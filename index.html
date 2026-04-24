@@ -292,14 +292,44 @@ async function submitAllocations() {
   row.total = spent;
 
   try {
-    await fetch(CONFIG.scriptUrl, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "text/plain" },
-      body: JSON.stringify(row)
-    });
-    // no-cors means we can't read the response, but the data is sent
-    document.getElementById("successOverlay").classList.add("show");
+    // Use a form-encoded POST via a hidden iframe to avoid CORS issues with Google Apps Script
+    const form = document.createElement("form");
+    form.method = "POST";
+    form.action = CONFIG.scriptUrl;
+    form.target = "hidden-iframe";
+    form.style.display = "none";
+
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "payload";
+    input.value = JSON.stringify(row);
+    form.appendChild(input);
+
+    // Also send as individual fields for easier Apps Script parsing
+    const dataInput = document.createElement("input");
+    dataInput.type = "hidden";
+    dataInput.name = "data";
+    dataInput.value = JSON.stringify(row);
+    form.appendChild(dataInput);
+
+    let iframe = document.getElementById("hidden-iframe");
+    if (!iframe) {
+      iframe = document.createElement("iframe");
+      iframe.name = "hidden-iframe";
+      iframe.id = "hidden-iframe";
+      iframe.style.display = "none";
+      document.body.appendChild(iframe);
+    }
+
+    document.body.appendChild(form);
+    form.submit();
+    document.body.removeChild(form);
+
+    // Wait a moment then show success (we can't read iframe response cross-origin)
+    setTimeout(() => {
+      document.getElementById("successOverlay").classList.add("show");
+    }, 1500);
+
   } catch (e) {
     btn.disabled = false;
     btn.textContent = "Submit My Picks";
