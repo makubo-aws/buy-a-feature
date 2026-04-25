@@ -166,12 +166,13 @@ async function loadReport() {
 
     if (rows.length === 0) return;
 
-    // Parse: col 0 = timestamp, col 1 = company, col 2..n-1 = features, col n = total
-    const featureCols = cols.slice(2, -1); // feature names
+    // Parse: col 0 = timestamp, col 1 = company, last col = total, everything else = features
+    const totalIdx = cols.indexOf("Total");
+    const featureCols = cols.filter((c, i) => i >= 2 && c !== "Total" && c !== "");
     const submissions = rows.map(r => ({
       company: r[1],
-      allocations: Object.fromEntries(featureCols.map((f, i) => [f, parseInt(r[i + 2]) || 0])),
-      total: parseInt(r[r.length - 1]) || 0
+      allocations: Object.fromEntries(featureCols.map(f => [f, parseInt(r[cols.indexOf(f)]) || 0])),
+      total: totalIdx !== -1 ? (parseInt(r[totalIdx]) || 0) : 0
     }));
 
     // Aggregate
