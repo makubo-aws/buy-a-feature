@@ -54,6 +54,11 @@ const CONFIG = {
       id: "feat-10",
       title: "Resource-Based IAM Policies",
       description: "Attach IAM policies directly to ElastiCache resources for fine-grained, resource-level access control"
+    },
+    {
+      id: "feat-11",
+      title: "Better Terraform Support",
+      description: "Improved Terraform provider coverage for ElastiCache resources, including full parity with console and API capabilities"
     }
   ],
 
