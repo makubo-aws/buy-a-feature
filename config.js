@@ -49,6 +49,11 @@ const CONFIG = {
       id: "feat-9",
       title: "Data Migration Tooling",
       description: "Tools to migrate data into ElastiCache from other caches or databases with minimal downtime"
+    },
+    {
+      id: "feat-10",
+      title: "Resource-Based IAM Policies",
+      description: "Attach IAM policies directly to ElastiCache resources for fine-grained, resource-level access control"
     }
   ],
 
