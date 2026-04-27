@@ -59,6 +59,11 @@ const CONFIG = {
       id: "feat-11",
       title: "Better Terraform Support",
       description: "Improved Terraform provider coverage for ElastiCache resources, including full parity with console and API capabilities"
+    },
+    {
+      id: "feat-12",
+      title: "Cluster Mode Disabled (CMD) for Serverless",
+      description: "Support for cluster mode disabled configurations in ElastiCache Serverless, enabling simpler single-shard workloads without cluster-aware client requirements"
     }
   ],
 
