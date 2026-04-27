@@ -44,6 +44,11 @@ const CONFIG = {
       id: "feat-8",
       title: "Native Integrations (DynamoDB, S3, RDS)",
       description: "Built-in integrations with AWS data services to simplify caching patterns and reduce application complexity"
+    },
+    {
+      id: "feat-9",
+      title: "Data Migration Tooling",
+      description: "Tools to migrate data into ElastiCache from other caches or databases with minimal downtime"
     }
   ],
 
