@@ -7,28 +7,43 @@ const CONFIG = {
   features: [
     {
       id: "feat-1",
-      title: "Real-time notifications",
-      description: "Push notifications for key events and threshold alerts"
+      title: "Active-Active Replication",
+      description: "Write to multiple regions simultaneously with conflict resolution for globally distributed applications"
     },
     {
       id: "feat-2",
-      title: "Custom dashboards",
-      description: "Build and share personalized monitoring dashboards"
+      title: "Blue/Green Upgrades",
+      description: "Zero-downtime version upgrades using blue/green deployment to minimize risk and disruption"
     },
     {
       id: "feat-3",
-      title: "API rate limiting controls",
-      description: "Fine-grained rate limiting configuration per endpoint"
+      title: "Higher Performance",
+      description: "Increased throughput and lower latency to handle more demanding workloads"
     },
     {
       id: "feat-4",
-      title: "Multi-region failover",
-      description: "Automated cross-region failover with one-click setup"
+      title: "Additional Data Types",
+      description: "Support for advanced data structures like cuckoo filters, time series, and more"
     },
     {
       id: "feat-5",
-      title: "Audit logging",
-      description: "Detailed audit trail for all configuration changes"
+      title: "Durability for ElastiCache",
+      description: "Persistent storage options so your cache data survives restarts and failures"
+    },
+    {
+      id: "feat-6",
+      title: "Global Data Store for Serverless",
+      description: "Cross-region replication support for ElastiCache Serverless workloads"
+    },
+    {
+      id: "feat-7",
+      title: "Observability (Hot Keys & Large Keys)",
+      description: "Visibility into hot keys and large keys to diagnose performance bottlenecks and optimize usage"
+    },
+    {
+      id: "feat-8",
+      title: "Native Integrations (DynamoDB, S3, RDS)",
+      description: "Built-in integrations with AWS data services to simplify caching patterns and reduce application complexity"
     }
   ],
 
